@@ -66,6 +66,7 @@ public class InputManager : MonoBehaviour
         
         if (GameManager.Instance.IsAllTheCellsUtilised())
         {
+            GameManager.Instance.CheckForTheMatch(activeBlocks);
             GameManager.Instance.RefillColorCells();
             activeBlocks.Clear();
         }
@@ -104,6 +105,7 @@ public class InputManager : MonoBehaviour
                     Color color = colorAndTag.color;
                     color.a = 1f;
                     block.blockImage.color = color; // Change color to green if it's the current or an adjacent block.
+                    block.blockImage.rectTransform.localScale = Vector3.one;
                     currentBlock = block; // Update the current block to the new one.
                     activeBlocks.Add(block);
                 }

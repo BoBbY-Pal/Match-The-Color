@@ -10,6 +10,9 @@ namespace DefaultNamespace
     {
         public GridManager gridManager;
         public CellColorManager cellColorManager;
+        public MatchFinder matchFinder;
+        
+        
         public Queue<ColorAndTag> activeColorsAndCell = new Queue<ColorAndTag>();
         public Queue<ColorAndTag> colorAndCells = new Queue<ColorAndTag>();
 
@@ -21,6 +24,10 @@ namespace DefaultNamespace
         public void StartGame()
         {
             gridManager.CreateGrid();
+            // StartCoroutine(cellColorManager.PrepareCells(0));
+            cellColorManager.PrepareCells(0);
+            colorAndCells = new Queue<ColorAndTag>(cellColorManager.colorQueue);
+            matchFinder = new MatchFinder(gridManager);
         }
         
         public ColorAndTag GetCellColorAndTag()
@@ -46,8 +53,8 @@ namespace DefaultNamespace
             }
             activeColorsAndCell.Clear();
             colorAndCells.Clear();
-            
-            colorAndCells = new Queue<ColorAndTag>(cellColorManager.FetchColorCells());
+
+            colorAndCells = new Queue<ColorAndTag>(cellColorManager.colorQueue);
             Debug.Log($"Color Cells refilled: {colorAndCells.Count}");
         }
 
@@ -56,7 +63,9 @@ namespace DefaultNamespace
             ResetActiveCells();
             colorAndCells.Clear();
             activeColorsAndCell.Clear();
-            StartCoroutine(cellColorManager.PrepareCells(0.3f));
+            // StartCoroutine(cellColorManager.PrepareCells(0.3f));
+            cellColorManager.PrepareCells(0.3f);
+            colorAndCells = new Queue<ColorAndTag>(cellColorManager.colorQueue);
             Debug.Log($"Color Cells refilled: {colorAndCells.Count}");
         }
 
@@ -71,14 +80,24 @@ namespace DefaultNamespace
             }
         }
 
-        public void CopyColorCells(Queue<ColorAndTag> colorAndTags)
-        {
-            colorAndCells = new Queue<ColorAndTag>(colorAndTags);
-            Debug.Log($"Color Cells refilled: {colorAndCells.Count}");
-        }
+      
         public bool IsAllTheCellsUtilised()
         {
             return colorAndCells.Count == 0;
+        }
+
+        public void CheckForTheMatch(List<Block> activeBlocks)
+        {
+            List<Block> matchedBlocks =  matchFinder.FindMatchingBlocks(activeBlocks);
+            if (matchedBlocks != null && matchedBlocks.Count >= 4)
+            {
+                Debug.Log($"Matches found: {matchedBlocks.Count}");
+
+                foreach (var block in matchedBlocks)
+                {
+                    block.ResetBlock();
+                }
+            }
         }
     }
 }

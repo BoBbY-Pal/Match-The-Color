@@ -64,6 +64,8 @@ public class Block : MonoBehaviour
         Color color = blockImage.color;
         color.a = 0f;
         blockImage.color = color;
+        blockImage.rectTransform.localScale = Vector3.zero;
+
     }
     
     public void SetBlockLocation(int rowIndex, int columnIndex)

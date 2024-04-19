@@ -37,7 +37,7 @@ public class GridManager : MonoBehaviour
                 for (int column = 0; column < columnSize; column++)
                 {
                     // Spawn a block instance and prepares it.
-                    RectTransform blockElement = GetBlockInsideGrid();
+                    RectTransform blockElement = InstantiateBlock();
                     blockElement.localPosition = new Vector3(currentPositionX, currentPositionY, 0);
                     currentPositionX += (blockSize + blockSpace);
                     blockElement.sizeDelta = Vector3.one * blockSize;
@@ -60,7 +60,7 @@ public class GridManager : MonoBehaviour
 
     }
                 
-    public RectTransform GetBlockInsideGrid()
+    private RectTransform InstantiateBlock()
     {
         GameObject block = (GameObject)(Instantiate(blockPrefab, gridParent)) as GameObject;
         block.transform.localScale = Vector3.one;
@@ -83,5 +83,15 @@ public class GridManager : MonoBehaviour
     {
         float totalHeight = (blockSize * columnSize) + ((columnSize - 1) * blockSpace);
         return ((totalHeight / 2) - (blockSize / 2));
+    }
+    
+    public Block GetBlockAt(int row, int column)
+    {
+        // Check if indices are within bounds before accessing
+        if (row >= 0 && row < rowSize && column >= 0 && column < columnSize)
+        {
+            return gridArray[row, column];
+        }
+        return null;
     }
 }
