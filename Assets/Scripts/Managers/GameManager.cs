@@ -96,6 +96,7 @@ namespace DefaultNamespace
                 foreach (var block in matchedBlocks)
                 {
                     block.ResetBlock();
+                    ScoreManager.Instance.UpdateScore(10);
                 }
             }
         }

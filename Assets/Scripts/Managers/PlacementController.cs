@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InputManager : MonoBehaviour
+public class PlacementController : MonoBehaviour
 {
     public CellColorManager cellColorManager;
  
