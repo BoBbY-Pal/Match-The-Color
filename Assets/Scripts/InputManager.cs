@@ -11,7 +11,7 @@ public class InputManager : MonoBehaviour
     public CellColorManager cellColorManager;
  
     private Block currentBlock;
-    
+    public List<Block> activeBlocks = new List<Block>();
 
   
     void Start()
@@ -50,7 +50,17 @@ public class InputManager : MonoBehaviour
     public void OnPointerUp()
     {
         Debug.Log("ONPointerUp");
-
+        if (GameManager.Instance.IsAllTheCellsUtilised())
+        {
+            GameManager.Instance.RefillColorCells();
+            activeBlocks.Clear();
+        }
+        else
+        {
+            Debug.Log("BLocks not utilised");
+            GameManager.Instance.ResetActiveColors();
+            ResetActiveBlocks();
+        }
         currentBlock = null; // Reset current block reference when the user stops dragging.
     }
     
@@ -82,6 +92,7 @@ public class InputManager : MonoBehaviour
                     color.a = 1f;
                     block.blockImage.color = color; // Change color to green if it's the current or an adjacent block.
                     currentBlock = block; // Update the current block to the new one.
+                    activeBlocks.Add(block);
                 }
                 else
                 {
@@ -102,6 +113,15 @@ public class InputManager : MonoBehaviour
 
         // Check for horizontal adjacency where dy == 0 and dx == 1, or vertical adjacency where dx == 0 and dy == 1.
         return (dx == 1 && dy == 0) || (dx == 0 && dy == 1);
+    }
+
+    public void ResetActiveBlocks()
+    {
+        foreach (Block activeBlock in activeBlocks)
+        {
+            activeBlock.ResetBlock();
+        }
+        activeBlocks.Clear();
     }
     
     private bool IsDiagonal(Block first, Block second)

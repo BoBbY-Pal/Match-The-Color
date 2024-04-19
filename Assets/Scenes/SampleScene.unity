@@ -199,6 +199,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 36497746}
   m_CullTransparentMesh: 1
+--- !u!1 &131800486
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 131800487}
+  - component: {fileID: 131800488}
+  m_Layer: 0
+  m_Name: Game Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &131800487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131800486}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1547254412}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &131800488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131800486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ca181dafb044b88a8fb7aa474b8cde3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridManager: {fileID: 231156617}
+  cellColorManager: {fileID: 713828411}
 --- !u!1 &153139932
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,7 +395,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOccupied: 0
-  blockImage: {fileID: 168538261}
+  colorTag: 
+  blockImage: {fileID: 547477677}
 --- !u!1 &183114927
 GameObject:
   m_ObjectHideFlags: 0
@@ -590,8 +637,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c6723ef754544a7bb34d8a44ade21d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellColorManager: {fileID: 0}
-  eventSystem: {fileID: 0}
+  cellColorManager: {fileID: 713828411}
+  activeBlocks: []
 --- !u!4 &378037385
 Transform:
   m_ObjectHideFlags: 0
@@ -1229,11 +1276,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b725d974e7b1564f9d07b01a88cf000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorCells:
-  - {r: 0.29773572, g: 0.3516988, b: 0.9924528, a: 0}
-  - {r: 0.4291847, g: 0.77606505, b: 0.8037735, a: 0}
-  - {r: 1, g: 0, b: 0, a: 0}
-  - {r: 0.60343647, g: 0.1641509, b: 1, a: 0}
   cells:
   - {fileID: 1096758393}
   - {fileID: 959867334}
@@ -1562,6 +1604,7 @@ Transform:
   m_Children:
   - {fileID: 231156616}
   - {fileID: 378037385}
+  - {fileID: 131800487}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

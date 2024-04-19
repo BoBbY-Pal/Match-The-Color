@@ -56,10 +56,14 @@ public class Block : MonoBehaviour
         
     }
 
-  
-    void Update()
+
+    public void ResetBlock()
     {
-        
+        isOccupied = false;
+        colorTag = "";
+        Color color = blockImage.color;
+        color.a = 0f;
+        blockImage.color = color;
     }
     
     public void SetBlockLocation(int rowIndex, int columnIndex)

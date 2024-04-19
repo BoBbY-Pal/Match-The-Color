@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ScriptableObjects
 {
@@ -9,9 +11,11 @@ namespace ScriptableObjects
         public List<ColorAndTag> cellColors = new List<ColorAndTag>();
     }
 
+    [Serializable]
     public struct ColorAndTag
     {
         public Color color;
+        [NonSerialized] public Image img;
         public string colorTag;
     }
 }

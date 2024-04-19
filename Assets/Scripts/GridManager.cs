@@ -42,12 +42,13 @@ public class GridManager : MonoBehaviour
                     currentPositionX += (blockSize + blockSpace);
                     blockElement.sizeDelta = Vector3.one * blockSize;
                     blockElement.GetComponent<Image>().color = Color.gray;
+                    blockElement.GetComponent<BoxCollider2D>().size = (Vector3.one * blockSize * 0.6f);;
                     blockElement.name = "block-" + row + "" + column;
 
                     // Sets blocks logical position inside grid and its default sprite.
                     Block block = blockElement.GetComponent<Block>();
+                    block.blockImage.rectTransform.sizeDelta = (Vector3.one * blockSize * 0.9f);
                     block.SetBlockLocation(row, column);
-                    block.thisCollider.size = (Vector3.one * blockSize * 0.6f);
                     block.gameObject.SetActive(true);
                     gridArray[row, column] = block;
                 }

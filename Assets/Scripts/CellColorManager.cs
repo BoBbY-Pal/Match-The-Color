@@ -27,14 +27,19 @@ public class CellColorManager : MonoBehaviour
 
     public void PrepareCells()
     {
+        colorQueue.Clear();
         int cellsToPrepare = Random.Range(0, cells.Count);
         for (int i = 0; i < cellsToPrepare; i++)
         {
             int randomColor = Random.Range(0, _cellColorsData.cellColors.Count);
-            colorQueue.Enqueue(_cellColorsData.cellColors[randomColor]);
+            ColorAndTag colorAndTag = _cellColorsData.cellColors[randomColor];
+            
             Color color = _cellColorsData.cellColors[randomColor].color;
             color.a = 1f;
             cells[i].color = color;
+            colorAndTag.img = cells[i];
+            colorAndTag.img.rectTransform.localScale = Vector3.one;
+            colorQueue.Enqueue(colorAndTag);
         }
         
     }
