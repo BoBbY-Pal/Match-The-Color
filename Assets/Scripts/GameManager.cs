@@ -11,7 +11,7 @@ namespace DefaultNamespace
         public GridManager gridManager;
         public CellColorManager cellColorManager;
         public Queue<ColorAndTag> activeColorsAndCell = new Queue<ColorAndTag>();
-
+        public Queue<ColorAndTag> colorAndCells = new Queue<ColorAndTag>();
 
         private void Start()
         {
@@ -25,7 +25,7 @@ namespace DefaultNamespace
         
         public ColorAndTag GetCellColorAndTag()
         {
-            ColorAndTag colorAndTag = cellColorManager.colorQueue.Dequeue();
+            ColorAndTag colorAndTag = colorAndCells.Dequeue();
             colorAndTag.img.rectTransform.localScale = Vector3.one * 0.6f;
             Color color = colorAndTag.img.color;
             color.a = 0.5f;
@@ -34,31 +34,51 @@ namespace DefaultNamespace
             return colorAndTag;
         }
 
-        public void ResetActiveColors()
+        public void RestoreActiveColorCells()
         {
             foreach (ColorAndTag activeColorCell in activeColorsAndCell)
             {
-                // ColorAndTag colorAndTag = activeColorsAndCell.Dequeue();
                 activeColorCell.img.rectTransform.localScale = Vector3.one;
                 Color color = activeColorCell.img.color;
                 color.a = 1f;
                 activeColorCell.img.color = color;
-                cellColorManager.colorQueue.Enqueue(activeColorCell);
                 Debug.Log("resetActiveCOlorCell");
             }
-            
             activeColorsAndCell.Clear();
+            colorAndCells.Clear();
+            
+            colorAndCells = new Queue<ColorAndTag>(cellColorManager.FetchColorCells());
+            Debug.Log($"Color Cells refilled: {colorAndCells.Count}");
         }
 
         public void RefillColorCells()
         {
-            cellColorManager.PrepareCells();
+            ResetActiveCells();
+            colorAndCells.Clear();
             activeColorsAndCell.Clear();
+            StartCoroutine(cellColorManager.PrepareCells(0.3f));
+            Debug.Log($"Color Cells refilled: {colorAndCells.Count}");
         }
-        
+
+        private void ResetActiveCells()
+        {
+            foreach (ColorAndTag activeCell in activeColorsAndCell)
+            {
+                activeCell.img.rectTransform.localScale = Vector3.zero;
+                Color color = activeCell.img.color;
+                color.a = 0f;
+                activeCell.img.color = color;
+            }
+        }
+
+        public void CopyColorCells(Queue<ColorAndTag> colorAndTags)
+        {
+            colorAndCells = new Queue<ColorAndTag>(colorAndTags);
+            Debug.Log($"Color Cells refilled: {colorAndCells.Count}");
+        }
         public bool IsAllTheCellsUtilised()
         {
-            return cellColorManager.colorQueue.Count == 0;
+            return colorAndCells.Count == 0;
         }
     }
 }

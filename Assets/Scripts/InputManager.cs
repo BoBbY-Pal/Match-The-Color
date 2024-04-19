@@ -12,7 +12,7 @@ public class InputManager : MonoBehaviour
  
     private Block currentBlock;
     public List<Block> activeBlocks = new List<Block>();
-
+    private bool IsCellsAlreadyUtilised = false; 
   
     void Start()
     {
@@ -43,13 +43,27 @@ public class InputManager : MonoBehaviour
     public void OnDrag()
     {
         Debug.Log("ONDrag");
-
+        if (GameManager.Instance.IsAllTheCellsUtilised())
+        {
+            OnPointerUp();
+            IsCellsAlreadyUtilised = true;
+            return;
+        }
         CheckBlock(false);
     }
 
     public void OnPointerUp()
     {
         Debug.Log("ONPointerUp");
+        currentBlock = null; // Reset current block reference when the user stops dragging.
+
+        
+        if (IsCellsAlreadyUtilised)
+        {
+            IsCellsAlreadyUtilised = false;
+            return;
+        }
+        
         if (GameManager.Instance.IsAllTheCellsUtilised())
         {
             GameManager.Instance.RefillColorCells();
@@ -58,10 +72,9 @@ public class InputManager : MonoBehaviour
         else
         {
             Debug.Log("BLocks not utilised");
-            GameManager.Instance.ResetActiveColors();
+            GameManager.Instance.RestoreActiveColorCells();
             ResetActiveBlocks();
         }
-        currentBlock = null; // Reset current block reference when the user stops dragging.
     }
     
     private void CheckBlock( bool initialize = false)
