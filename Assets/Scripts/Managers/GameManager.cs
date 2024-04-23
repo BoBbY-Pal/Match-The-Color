@@ -24,8 +24,7 @@ namespace DefaultNamespace
         public void StartGame()
         {
             gridManager.CreateGrid();
-            // StartCoroutine(cellColorManager.PrepareCells(0));
-            cellColorManager.PrepareCells(0);
+            cellColorManager.PrepareCells();
             colorAndCells = new Queue<ColorAndTag>(cellColorManager.colorQueue);
             matchFinder = new MatchFinder(gridManager);
         }
@@ -63,8 +62,7 @@ namespace DefaultNamespace
             ResetActiveCells();
             colorAndCells.Clear();
             activeColorsAndCell.Clear();
-            // StartCoroutine(cellColorManager.PrepareCells(0.3f));
-            cellColorManager.PrepareCells(0.3f);
+            cellColorManager.PrepareCells();
             colorAndCells = new Queue<ColorAndTag>(cellColorManager.colorQueue);
             Debug.Log($"Color Cells refilled: {colorAndCells.Count}");
         }

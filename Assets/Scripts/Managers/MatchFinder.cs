@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using DefaultNamespace;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-// using UnityEngine;
 
 public class MatchFinder 
 {
-    private GridManager gridManager; // Assume this is set up correctly elsewhere
+    private GridManager gridManager;
 
     // Constructor to set the GridManager
     public MatchFinder(GridManager gridManager)

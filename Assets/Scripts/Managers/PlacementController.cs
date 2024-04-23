@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DefaultNamespace;
 using ScriptableObjects;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class PlacementController : MonoBehaviour
 {
-    public CellColorManager cellColorManager;
- 
     private Block currentBlock;
     public List<Block> activeBlocks = new List<Block>();
     private bool IsCellsAlreadyUtilised = false; 

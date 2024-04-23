@@ -25,13 +25,12 @@ public class CellColorManager : MonoBehaviour
     {
     }
 
-    public void PrepareCells(float delay)
+    public void PrepareCells()
     {
-        // yield return new WaitForSeconds(delay);
         Debug.Log("Refilling color cells");
         colorQueue.Clear();
         int cellsToPrepare = Random.Range(0, cells.Count);
-        for (int i = 0; i < cellsToPrepare; i++)
+        for (int i = 0; i <= cellsToPrepare; i++)
         {
             int randomColor = Random.Range(0, _cellColorsData.cellColors.Count);
             ColorAndTag colorAndTag = _cellColorsData.cellColors[randomColor];
