@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using Script.Utils;
 using ScriptableObjects;
 using UnityEngine;
@@ -12,9 +13,15 @@ namespace DefaultNamespace
         public CellColorManager cellColorManager;
         public MatchFinder matchFinder;
         
-        
+        /// <summary>
+        /// List of cells in container which are active, means they're not permanently placed yet and can be restored if player fails to place all the cells from the container.
+        /// </summary>
         public Queue<ColorAndTag> activeColorsAndCell = new Queue<ColorAndTag>();
-        public Queue<ColorAndTag> colorAndCells = new Queue<ColorAndTag>();
+        
+        /// <summary>
+        /// list of cells to place on grid, stored in custom type with color, tag and img ref. 
+        /// </summary>
+        public Queue<ColorAndTag> colorAndCellsToPlace = new Queue<ColorAndTag>();  
 
         private void Start()
         {
@@ -25,46 +32,47 @@ namespace DefaultNamespace
         {
             gridManager.CreateGrid();
             cellColorManager.PrepareCells();
-            colorAndCells = new Queue<ColorAndTag>(cellColorManager.colorQueue);
+            colorAndCellsToPlace = new Queue<ColorAndTag>(cellColorManager.colorQueue);
             matchFinder = new MatchFinder(gridManager);
         }
         
         public ColorAndTag GetCellColorAndTag()
         {
-            ColorAndTag colorAndTag = colorAndCells.Dequeue();
-            colorAndTag.img.rectTransform.localScale = Vector3.one * 0.6f;
+            ColorAndTag colorAndTag = colorAndCellsToPlace.Dequeue();
+            colorAndTag.img.rectTransform.DOScale(new Vector3(0.55f,0.55f, 0.55f), 0.5f) ;
             Color color = colorAndTag.img.color;
-            color.a = 0.5f;
-            colorAndTag.img.color = color;
+            colorAndTag.img.DOFade(0.5f, 0.5f);
+            // color.a = 0.5f;
+            // colorAndTag.img.color = color;
             activeColorsAndCell.Enqueue(colorAndTag);
             return colorAndTag;
         }
 
-        public void RestoreActiveColorCells()
+        public void RestoreActiveCells()
         {
-            foreach (ColorAndTag activeColorCell in activeColorsAndCell)
+            foreach (ColorAndTag activeCell in activeColorsAndCell)
             {
-                activeColorCell.img.rectTransform.localScale = Vector3.one;
-                Color color = activeColorCell.img.color;
+                activeCell.img.rectTransform.DOScale(Vector3.one, 0.3f);
+                Color color = activeCell.img.color;
                 color.a = 1f;
-                activeColorCell.img.color = color;
+                activeCell.img.color = color;
                 Debug.Log("resetActiveCOlorCell");
             }
             activeColorsAndCell.Clear();
-            colorAndCells.Clear();
+            colorAndCellsToPlace.Clear();
 
-            colorAndCells = new Queue<ColorAndTag>(cellColorManager.colorQueue);
-            Debug.Log($"Color Cells refilled: {colorAndCells.Count}");
+            colorAndCellsToPlace = new Queue<ColorAndTag>(cellColorManager.colorQueue);
+            Debug.Log($"Color Cells refilled: {colorAndCellsToPlace.Count}");
         }
 
         public void RefillColorCells()
         {
             ResetActiveCells();
-            colorAndCells.Clear();
+            colorAndCellsToPlace.Clear();
             activeColorsAndCell.Clear();
             cellColorManager.PrepareCells();
-            colorAndCells = new Queue<ColorAndTag>(cellColorManager.colorQueue);
-            Debug.Log($"Color Cells refilled: {colorAndCells.Count}");
+            colorAndCellsToPlace = new Queue<ColorAndTag>(cellColorManager.colorQueue);
+            Debug.Log($"Color Cells refilled: {colorAndCellsToPlace.Count}");
         }
 
         private void ResetActiveCells()
@@ -81,7 +89,7 @@ namespace DefaultNamespace
       
         public bool IsAllTheCellsUtilised()
         {
-            return colorAndCells.Count == 0;
+            return colorAndCellsToPlace.Count == 0;
         }
 
         public void CheckForTheMatch(List<Block> activeBlocks)

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
+using DG.Tweening;
 using ScriptableObjects;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,17 +30,26 @@ public class CellColorManager : MonoBehaviour
     {
         Debug.Log("Refilling color cells");
         colorQueue.Clear();
+        
         int cellsToPrepare = Random.Range(0, cells.Count);
         for (int i = 0; i <= cellsToPrepare; i++)
         {
             int randomColor = Random.Range(0, _cellColorsData.cellColors.Count);
-            ColorAndTag colorAndTag = _cellColorsData.cellColors[randomColor];
             
-            Color color = _cellColorsData.cellColors[randomColor].color;
+
+            ColorAndTag originalColorAndTag = _cellColorsData.cellColors[randomColor];
+            // Make a copy of the original ColorAndTag
+            ColorAndTag colorAndTag = originalColorAndTag.Copy();
+        
+            // Modify the color of the copy
+            Color color = colorAndTag.color;
             color.a = 1f;
+            colorAndTag.color = color;
+            
+            // Apply the color to the cell and enqueue the colorAndTag
             cells[i].color = color;
             colorAndTag.img = cells[i];
-            colorAndTag.img.rectTransform.localScale = Vector3.one;
+            cells[i].rectTransform.DOScale(Vector3.one, 0.5f);
             colorQueue.Enqueue(colorAndTag);
         }
         

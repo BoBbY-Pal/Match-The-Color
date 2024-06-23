@@ -1,13 +1,23 @@
 ﻿using System.Collections.Generic;
 using DefaultNamespace;
+using DG.Tweening;
 using ScriptableObjects;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlacementController : MonoBehaviour
 {
     private Block currentBlock;
-    public List<Block> activeBlocks = new List<Block>();
-    private bool IsCellsAlreadyUtilised = false; 
+    
+    /// <summary>
+    /// List of blocks on grid which are active, means they're not permanently placed yet and can be restored if player fails to place all the cells from the container.
+    /// </summary>
+    public List<Block> activeGridBlocks = new List<Block>();
+    
+    /// <summary>
+    /// This variable will be true when all of the cells from container is placed.
+    /// </summary>
+    // private bool IsCellsAlreadyUtilised = false; 
   
     void Start()
     {
@@ -38,12 +48,12 @@ public class PlacementController : MonoBehaviour
     public void OnDrag()
     {
         Debug.Log("ONDrag");
-        if (GameManager.Instance.IsAllTheCellsUtilised())
-        {
-            OnPointerUp();
-            IsCellsAlreadyUtilised = true;
-            return;
-        }
+        // if (GameManager.Instance.IsAllTheCellsUtilised())
+        // {
+        //     OnPointerUp();
+        //     IsCellsAlreadyUtilised = true;
+        //     return;
+        // }
         CheckBlock(false);
     }
 
@@ -53,28 +63,33 @@ public class PlacementController : MonoBehaviour
         currentBlock = null; // Reset current block reference when the user stops dragging.
 
         
-        if (IsCellsAlreadyUtilised)
-        {
-            IsCellsAlreadyUtilised = false;
-            return;
-        }
+        // if (IsCellsAlreadyUtilised)
+        // {
+        //     IsCellsAlreadyUtilised = false;
+        //     return;
+        // }
         
         if (GameManager.Instance.IsAllTheCellsUtilised())
         {
-            GameManager.Instance.CheckForTheMatch(activeBlocks);
+            GameManager.Instance.CheckForTheMatch(activeGridBlocks);
             GameManager.Instance.RefillColorCells();
-            activeBlocks.Clear();
+            activeGridBlocks.Clear();
+            // IsCellsAlreadyUtilised = false;
+            return;
         }
         else
         {
             Debug.Log("BLocks not utilised");
-            GameManager.Instance.RestoreActiveColorCells();
+            GameManager.Instance.RestoreActiveCells();
             ResetActiveBlocks();
         }
     }
     
     private void CheckBlock( bool initialize = false)
-    {  
+    {
+        if (GameManager.Instance.IsAllTheCellsUtilised())
+                    return;
+        
         Vector2 mousePosition = Input.mousePosition;
         RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero, 1f);
         
@@ -100,9 +115,10 @@ public class PlacementController : MonoBehaviour
                     Color color = colorAndTag.color;
                     color.a = 1f;
                     block.blockImage.color = color; // Change color to green if it's the current or an adjacent block.
-                    block.blockImage.rectTransform.localScale = Vector3.one;
+                  
+                    block.blockImage.rectTransform.DOScale(Vector3.one, 0.5f);
                     currentBlock = block; // Update the current block to the new one.
-                    activeBlocks.Add(block);
+                    activeGridBlocks.Add(block);
                 }
                 else
                 {
@@ -127,11 +143,11 @@ public class PlacementController : MonoBehaviour
 
     public void ResetActiveBlocks()
     {
-        foreach (Block activeBlock in activeBlocks)
+        foreach (Block activeBlock in activeGridBlocks)
         {
             activeBlock.ResetBlock();
         }
-        activeBlocks.Clear();
+        activeGridBlocks.Clear();
     }
     
     private bool IsDiagonal(Block first, Block second)

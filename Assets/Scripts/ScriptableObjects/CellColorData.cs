@@ -17,5 +17,10 @@ namespace ScriptableObjects
         public Color color;
         [NonSerialized] public Image img;
         public string colorTag;
+        
+        public ColorAndTag Copy()
+        {
+            return new ColorAndTag { color = this.color, colorTag = this.colorTag, img = this.img };
+        }
     }
 }
