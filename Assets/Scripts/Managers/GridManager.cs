@@ -29,7 +29,9 @@ public class GridManager : MonoBehaviour
             float currentPositionX = startPointX;
             float currentPositionY = startPointY;
             
-            
+            Debug.Log($"StartPointX: {startPointX}");
+            Debug.Log($"StartPointY: {startPointY}");
+
             // Iterates through all rows and columns to generate grid.
             for (int row = 0; row < rowSize; row++)
             {
