@@ -99,9 +99,9 @@ namespace DefaultNamespace
             {
                 Debug.Log($"Matches found: {matchedBlocks.Count}");
 
-                foreach (var block in matchedBlocks)
+                foreach (Block block in matchedBlocks)
                 {
-                    block.ResetBlock();
+                    block.ResetBlock(0.5f);
                     ScoreManager.Instance.UpdateScore(10);
                 }
             }

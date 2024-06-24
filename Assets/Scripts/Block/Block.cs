@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -54,14 +55,14 @@ public class Block : MonoBehaviour
     }
 
 
-    public void ResetBlock()
+    public void ResetBlock(float delay)
     {
         isOccupied = false;
         colorTag = "";
-        Color color = blockImage.color;
-        color.a = 0f;
-        blockImage.color = color;
-        blockImage.rectTransform.localScale = Vector3.zero;
+        blockImage.rectTransform.DOScale(Vector3.zero, delay);
+        // Color color = blockImage.color;
+        // color.a = 0f;
+        // blockImage.color = color;
 
     }
     

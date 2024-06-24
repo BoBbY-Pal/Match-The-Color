@@ -145,7 +145,7 @@ public class PlacementController : MonoBehaviour
     {
         foreach (Block activeBlock in activeGridBlocks)
         {
-            activeBlock.ResetBlock();
+            activeBlock.ResetBlock(0.01f);
         }
         activeGridBlocks.Clear();
     }
