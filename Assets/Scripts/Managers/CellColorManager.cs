@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
 using DG.Tweening;
+using Script.Utils;
 using ScriptableObjects;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public class CellColorManager : MonoBehaviour
+public class CellColorManager : Singleton<CellColorManager>
 {
     private CellColorData _cellColorsData;
 
@@ -19,11 +20,6 @@ public class CellColorManager : MonoBehaviour
     {
         _cellColorsData = (CellColorData) Resources.Load("CellColorsData");
 
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
     }
 
     public void PrepareCells()
@@ -38,22 +34,32 @@ public class CellColorManager : MonoBehaviour
             
 
             ColorAndTag originalColorAndTag = _cellColorsData.cellColors[randomColor];
-            // Make a copy of the original ColorAndTag
+            // Make a copy of the original ColorAndTag so that it doesn't modify the original scriptable object's data.
             ColorAndTag colorAndTag = originalColorAndTag.Copy();
-        
-            // Modify the color of the copy
-            Color color = colorAndTag.color;
-            color.a = 1f;
-            colorAndTag.color = color;
             
             // Apply the color to the cell and enqueue the colorAndTag
+            cells[i].color =  colorAndTag.color;
+            
+            // Set it's alpha value.
+            Color color = cells[i].color;
+            color.a = 1f;
             cells[i].color = color;
+            
             colorAndTag.img = cells[i];
             cells[i].rectTransform.DOScale(Vector3.one, 0.5f);
             colorQueue.Enqueue(colorAndTag);
         }
-        
-       
     }
     
+    public void RefillColorCells()
+    {
+        GameManager.Instance.ResetActiveCells();
+        PrepareCells();
+        GameManager.Instance.AssignNewColors(new Queue<ColorAndTag>(colorQueue));
+    }
+    
+    public Queue<ColorAndTag> GetNewColors( )
+    {
+       return new Queue<ColorAndTag>(colorQueue);
+    }
 }

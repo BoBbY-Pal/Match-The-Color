@@ -72,7 +72,7 @@ public class PlacementController : MonoBehaviour
         if (GameManager.Instance.IsAllTheCellsUtilised())
         {
             GameManager.Instance.CheckForTheMatch(activeGridBlocks);
-            GameManager.Instance.RefillColorCells();
+            CellColorManager.Instance.RefillColorCells();
             activeGridBlocks.Clear();
             // IsCellsAlreadyUtilised = false;
             return;

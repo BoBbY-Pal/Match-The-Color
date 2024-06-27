@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: CellColorsData
   m_EditorClassIdentifier: 
   cellColors:
-  - color: {r: 1, g: 0, b: 0, a: 0}
+  - color: {r: 1, g: 0, b: 0, a: 1}
     colorTag: C1
-  - color: {r: 0.42830187, g: 1, b: 0.45293927, a: 0}
+  - color: {r: 0.42830187, g: 1, b: 0.45293927, a: 1}
     colorTag: C2
-  - color: {r: 0.90993786, g: 0, b: 1, a: 0}
+  - color: {r: 0.90993786, g: 0, b: 1, a: 1}
     colorTag: C3
-  - color: {r: 0, g: 1, b: 0.7947893, a: 0}
+  - color: {r: 0, g: 1, b: 0.7947893, a: 1}
     colorTag: C4
-  - color: {r: 0.05904436, g: 0, b: 1, a: 0}
+  - color: {r: 0.05904436, g: 0, b: 1, a: 1}
     colorTag: C5
-  - color: {r: 0.90699434, g: 1, b: 0, a: 0}
+  - color: {r: 0.90699434, g: 1, b: 0, a: 1}
     colorTag: C6
-  - color: {r: 0, g: 0, b: 0, a: 0}
+  - color: {r: 0, g: 0, b: 0, a: 1}
     colorTag: C7

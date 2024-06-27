@@ -96,4 +96,45 @@ public class GridManager : MonoBehaviour
         }
         return null;
     }
+    
+    // Method to check for available adjacent spaces
+    public bool CheckAdjacentSpaces(int count)
+    {
+        for (int row = 0; row < rowSize; row++)
+        {
+            for (int column = 0; column < columnSize; column++)
+            {
+                if (IsSpaceAvailable(row, column, count))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private bool IsSpaceAvailable(int startRow, int startColumn, int remainingCount)
+    {
+        if (remainingCount == 0)
+        {
+            return true;
+        }
+
+        if (startRow < 0 || startRow >= rowSize || startColumn < 0 || startColumn >= columnSize || gridArray[startRow, startColumn].isOccupied)
+        {
+            return false;
+        }
+
+        gridArray[startRow, startColumn].isOccupied = true; // Temporarily mark as occupied
+
+        // Check all four directions
+        bool spaceAvailable = IsSpaceAvailable(startRow - 1, startColumn, remainingCount - 1) || // Up
+                              IsSpaceAvailable(startRow + 1, startColumn, remainingCount - 1) || // Down
+                              IsSpaceAvailable(startRow, startColumn - 1, remainingCount - 1) || // Left
+                              IsSpaceAvailable(startRow, startColumn + 1, remainingCount - 1);   // Right
+
+        gridArray[startRow, startColumn].isOccupied = false; // Reset to original state
+
+        return spaceAvailable;
+    }
 }

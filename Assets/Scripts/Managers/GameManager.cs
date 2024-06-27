@@ -10,7 +10,7 @@ namespace DefaultNamespace
     public class GameManager : Singleton<GameManager>
     {
         public GridManager gridManager;
-        public CellColorManager cellColorManager;
+        // public CellColorManager cellColorManager;
         public MatchFinder matchFinder;
         
         /// <summary>
@@ -31,8 +31,8 @@ namespace DefaultNamespace
         public void StartGame()
         {
             gridManager.CreateGrid();
-            cellColorManager.PrepareCells();
-            colorAndCellsToPlace = new Queue<ColorAndTag>(cellColorManager.colorQueue);
+            CellColorManager.Instance.PrepareCells();
+            colorAndCellsToPlace = CellColorManager.Instance.GetNewColors();
             matchFinder = new MatchFinder(gridManager);
         }
         
@@ -40,7 +40,7 @@ namespace DefaultNamespace
         {
             ColorAndTag colorAndTag = colorAndCellsToPlace.Dequeue();
             colorAndTag.img.rectTransform.DOScale(new Vector3(0.55f,0.55f, 0.55f), 0.5f) ;
-            Color color = colorAndTag.img.color;
+            // Color color = colorAndTag.img.color;
             colorAndTag.img.DOFade(0.5f, 0.5f);
             // color.a = 0.5f;
             // colorAndTag.img.color = color;
@@ -61,21 +61,11 @@ namespace DefaultNamespace
             activeColorsAndCell.Clear();
             colorAndCellsToPlace.Clear();
 
-            colorAndCellsToPlace = new Queue<ColorAndTag>(cellColorManager.colorQueue);
+            colorAndCellsToPlace = CellColorManager.Instance.GetNewColors();
             Debug.Log($"Color Cells refilled: {colorAndCellsToPlace.Count}");
         }
 
-        public void RefillColorCells()
-        {
-            ResetActiveCells();
-            colorAndCellsToPlace.Clear();
-            activeColorsAndCell.Clear();
-            cellColorManager.PrepareCells();
-            colorAndCellsToPlace = new Queue<ColorAndTag>(cellColorManager.colorQueue);
-            Debug.Log($"Color Cells refilled: {colorAndCellsToPlace.Count}");
-        }
-
-        private void ResetActiveCells()
+        public void ResetActiveCells()
         {
             foreach (ColorAndTag activeCell in activeColorsAndCell)
             {
@@ -83,10 +73,18 @@ namespace DefaultNamespace
                 Color color = activeCell.img.color;
                 color.a = 0f;
                 activeCell.img.color = color;
+                Debug.Log("Cell reset success", activeCell.img.gameObject);
             }
+            
+            colorAndCellsToPlace.Clear();
+            activeColorsAndCell.Clear();
         }
 
-      
+      public void AssignNewColors(Queue<ColorAndTag> queue)
+      {
+          colorAndCellsToPlace = new Queue<ColorAndTag>(queue);
+          Debug.Log($"Color Cells refilled: {colorAndCellsToPlace.Count}");
+      }
         public bool IsAllTheCellsUtilised()
         {
             return colorAndCellsToPlace.Count == 0;
