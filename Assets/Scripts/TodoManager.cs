@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
 using Newtonsoft.Json.Linq;
 
 public class TodoManager : MonoBehaviour
@@ -14,9 +14,36 @@ public class TodoManager : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(FetchTodos());
+        StartCoroutine(GetTodos());
     }
 
+    IEnumerator GetTodos()
+    {
+        UnityWebRequest request = UnityWebRequest.Get(url);
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError(request.error);
+        }
+        else
+        {
+            // Parse the JSON response
+            TodoResponse response = JsonUtility.FromJson<TodoResponse>(request.downloadHandler.text);
+            DisplayTodos(response.todos);
+            
+        }
+    }
+    void DisplayTodos(List<Todo> todos)
+    {
+        foreach (Todo todo in todos)
+        {
+            TodoItem todoItem = Instantiate(todoItemPrefab, content);
+            todoItem.descriptionTxt.text = todo.todo;
+            todoItem.toggle.isOn = todo.completed;
+            todoItem.userIdTxt.text = todo.userId.ToString();
+        }
+    }
     IEnumerator FetchTodos()
     {
         UnityWebRequest request = UnityWebRequest.Get(url);
