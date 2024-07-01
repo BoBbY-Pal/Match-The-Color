@@ -1,4 +1,4 @@
-using Controllers;
+
 using Managers;
 using Script.Utils;
 using UnityEngine;
@@ -22,7 +22,6 @@ public class UiManager : Singleton<UiManager>
         Debug.Log("Exit button pressed");
         mainmenuPanel.SetActive(true);
         gameplayPanel.SetActive(false);
-        GameManager.Instance.StartGame();
         GameManager.Instance.ExitGame();
     }
 }

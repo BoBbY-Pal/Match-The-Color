@@ -5,7 +5,7 @@ using Script.Utils;
 using ScriptableObjects;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace Managers
 {
     public class GameManager : Singleton<GameManager>
     {
@@ -22,11 +22,6 @@ namespace DefaultNamespace
         /// list of cells to place on grid, stored in custom type with color, tag and img ref. 
         /// </summary>
         public Queue<ColorAndTag> colorAndCellsToPlace = new Queue<ColorAndTag>();  
-
-        private void Start()
-        {
-            StartGame();
-        }
 
         public void StartGame()
         {
@@ -103,6 +98,14 @@ namespace DefaultNamespace
                     ScoreManager.Instance.UpdateScore(10);
                 }
             }
+        }
+
+        public void ExitGame()
+        {
+            gridManager.ClearGrid();
+            colorAndCellsToPlace.Clear();
+            activeColorsAndCell.Clear();
+            matchFinder = null;
         }
     }
 }
