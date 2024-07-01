@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DefaultNamespace;
+using Controllers;
 using DG.Tweening;
+using Managers;
 using Script.Utils;
 using ScriptableObjects;
 using UnityEngine;
@@ -16,10 +17,15 @@ public class CellColorManager : Singleton<CellColorManager>
     [SerializeField] private List<Image> cells = new List<Image>();
     public Queue<ColorAndTag> colorQueue = new Queue<ColorAndTag>();
     
-    private void Awake()
+    private void OnEnable()
     {
         _cellColorsData = (CellColorData) Resources.Load("CellColorsData");
 
+    }
+
+    private void OnDisable()
+    {
+        colorQueue.Clear();
     }
 
     public void PrepareCells()

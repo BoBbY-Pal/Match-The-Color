@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
-using DefaultNamespace;
+﻿using System;
+using System.Collections.Generic;
+using Controllers;
 using DG.Tweening;
+using Managers;
 using ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -47,13 +49,6 @@ public class PlacementController : MonoBehaviour
 
     public void OnDrag()
     {
-        Debug.Log("ONDrag");
-        // if (GameManager.Instance.IsAllTheCellsUtilised())
-        // {
-        //     OnPointerUp();
-        //     IsCellsAlreadyUtilised = true;
-        //     return;
-        // }
         CheckBlock(false);
     }
 
@@ -163,4 +158,9 @@ public class PlacementController : MonoBehaviour
         return dx == 1 && dy == 1;
     }
 
+    private void OnDisable()
+    {
+        currentBlock = null;
+        activeGridBlocks.Clear();
+    }
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,11 +12,6 @@ public class GridManager : MonoBehaviour
     public Transform gridParent;
 
     private Block[,] gridArray;
-
-    void Start()
-    {
-        
-    }
 
     public void CreateGrid()
     {
@@ -61,7 +57,20 @@ public class GridManager : MonoBehaviour
             }
 
     }
-                
+         
+    public void ClearGrid()
+    {
+            for (int row = 0; row < rowSize; row++)
+            {
+                for (int column = 0; column < columnSize; column++)
+                {
+                    Destroy(gridArray[row, column].gameObject);
+                }
+            }
+
+            gridArray = null;
+    }
+    
     private RectTransform InstantiateBlock()
     {
         GameObject block = (GameObject)(Instantiate(blockPrefab, gridParent)) as GameObject;

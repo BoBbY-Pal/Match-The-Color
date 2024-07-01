@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Script.Utils;
@@ -9,11 +10,12 @@ public class ScoreManager : Singleton<ScoreManager>
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI bestScoreText;
 
-    private const string BestScoreKey = "BESTSCORE";
+    public const string BestScoreKey = "BESTSCORE";
 
     private int currentScore = 0;
     private int bestScore = 0;
-    void Start()
+
+    private void OnEnable()
     {
         if (PlayerPrefs.HasKey(BestScoreKey))
         {
@@ -32,5 +34,10 @@ public class ScoreManager : Singleton<ScoreManager>
             PlayerPrefs.SetInt(BestScoreKey, bestScore);
         }
         scoreText.SetText(currentScore.ToString());
+    }
+
+    private void OnDisable()
+    {
+        currentScore = 0;
     }
 }
