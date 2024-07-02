@@ -12,6 +12,8 @@ public class UiManager : Singleton<UiManager>
 {
     [SerializeField] private GameObject gameplayPanel;
     [SerializeField] private GameObject mainmenuPanel;
+    [SerializeField] private GameObject gameInfoPanel;
+    
     [SerializeField] private GameoverScreen gameOverPanel;
     [SerializeField] private TextMeshProUGUI mainMenuBestScore;
     private void Start()
@@ -48,6 +50,27 @@ public class UiManager : Singleton<UiManager>
         GameManager.Instance.ExitGame();
         
         PlayBtnPressed();
+    }
+    
+    public void InfoBtnPressed()
+    {
+        Debug.Log("Show Info");
+
+    }
+    
+    public void OpenProfile()
+    {
+        Debug.Log("Open profile");
+        // Replace the URL with the LinkedIn profile URL you want to open
+        string url = "https://www.linkedin.com/in/bobby-pal/";
+        Application.OpenURL(url);
+    }
+    
+    public void MuteBtnPressed()
+    {
+        Debug.Log("MUTE");
+
+        SoundManager.Instance.Mute(!SoundManager.Instance.isMute);
     }
     
     public void Gameover()
