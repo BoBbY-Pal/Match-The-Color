@@ -60,9 +60,9 @@ public class Block : MonoBehaviour
         isOccupied = false;
         colorTag = "";
         blockImage.rectTransform.DOScale(Vector3.zero, delay);
-        // Color color = blockImage.color;
-        // color.a = 0f;
-        // blockImage.color = color;
+        Color color = blockImage.color;
+        color.a = 0f;
+        blockImage.color = color;
 
     }
     

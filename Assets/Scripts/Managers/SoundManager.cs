@@ -6,7 +6,7 @@ public class SoundManager : Singleton<SoundManager>
 {
     public AudioSource soundEffect;
     public AudioSource soundMusic;
-    public AudioSource environmentSound;
+   
     
     public bool isMute;
     
@@ -14,19 +14,13 @@ public class SoundManager : Singleton<SoundManager>
     public float volume = 1f;
     public Sounds[] sound;
     
-
-    #region SINGLETON
-    public static SoundManager Instance { get; private set; }
-
-    private void Awake() 
-    {
-       
-    }
-    #endregion
-    
     private void Start() 
     {
-        PlayMusic(global::SoundTypes.Music);    
+        if (soundMusic!=null)
+        {
+            PlayMusic(global::SoundTypes.Music);    
+            
+        }
     }
 
     public void Mute(bool status)
@@ -38,19 +32,6 @@ public class SoundManager : Singleton<SoundManager>
         this.volume = volume;
         soundMusic.volume = this.volume;
         soundEffect.volume = this.volume;
-    }
-
-    public void PlayEnvironmentMusic(SoundTypes soundType)
-    {   
-        if(isMute) 
-            return;
-        AudioClip clip = GetSoundClip(soundType);
-        if(clip != null) {
-            environmentSound.clip = clip;
-            environmentSound.Play();
-        }   else {
-                Debug.LogError("Clip not found for sound type: " + soundType );
-        }
     }
 
     private void PlayMusic(SoundTypes soundType)
@@ -102,6 +83,7 @@ public enum SoundTypes
     ButtonClick,
     CellRestore,
     CellRefill,
-    CellPlace
+    CellPlace,
+    GameOver,
     
 }

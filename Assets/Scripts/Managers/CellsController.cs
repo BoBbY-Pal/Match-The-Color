@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using Managers;
@@ -7,13 +8,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public class CellColorManager : Singleton<CellColorManager>
+public class CellsController : Singleton<CellsController>
 {
     private CellColorData _cellColorsData;
 
     [SerializeField] private List<Image> cells = new List<Image>();
     public Queue<ColorAndTag> colorQueue = new Queue<ColorAndTag>();
-    
+
+    private readonly float inBetweenDelay = 0.1f;
+    private WaitForSeconds inBetweenWait;
+
+    void Awake()
+    {
+        inBetweenWait = new WaitForSeconds(inBetweenDelay);
+    }
     private void OnEnable()
     {
         _cellColorsData = (CellColorData) Resources.Load("CellColorsData");
@@ -47,16 +55,19 @@ public class CellColorManager : Singleton<CellColorManager>
             Color color = cells[i].color;
             color.a = 1f;
             cells[i].color = color;
-            
+
             colorAndTag.img = cells[i];
             cells[i].rectTransform.DOScale(Vector3.one, 0.5f);
             colorQueue.Enqueue(colorAndTag);
+            // yield return inBetweenWait;
         }
+        SoundManager.Instance.Play(SoundTypes.CellRefill);
     }
     
     public void RefillColorCells()
     {
         GameManager.Instance.ResetActiveCells();
+        // StartCoroutine(CellColorManager.Instance.PrepareCells());
         PrepareCells();
         GameManager.Instance.AssignNewColors(new Queue<ColorAndTag>(colorQueue));
     }

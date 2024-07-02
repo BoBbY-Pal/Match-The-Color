@@ -10,23 +10,25 @@ using UnityEngine;
 public class PlacementController : MonoBehaviour
 {
     private Block currentBlock;
-    
+    [SerializeField] private GridManager gridManager;
+
     /// <summary>
     /// List of blocks on grid which are active, means they're not permanently placed yet and can be restored if player fails to place all the cells from the container.
     /// </summary>
     public List<Block> activeGridBlocks = new List<Block>();
     
-    /// <summary>
-    /// This variable will be true when all of the cells from container is placed.
-    /// </summary>
-    // private bool IsCellsAlreadyUtilised = false; 
-  
-    void Start()
+    public MatchFinder matchFinder;
+
+    private void OnEnable()
     {
+        matchFinder = new MatchFinder(gridManager);
     }
 
     private void Update()
     {
+        if (GameManager.Instance.isGameOver)
+            return;
+        
         if (UnityEngine.Input.GetMouseButtonDown(0))
         {
             OnPointerDown();
@@ -58,28 +60,38 @@ public class PlacementController : MonoBehaviour
         currentBlock = null; // Reset current block reference when the user stops dragging.
 
         
-        // if (IsCellsAlreadyUtilised)
-        // {
-        //     IsCellsAlreadyUtilised = false;
-        //     return;
-        // }
-        
         if (GameManager.Instance.IsAllTheCellsUtilised())
         {
-            GameManager.Instance.CheckForTheMatch(activeGridBlocks);
-            CellColorManager.Instance.RefillColorCells();
+            CheckForTheMatch(activeGridBlocks);
+            CellsController.Instance.RefillColorCells();
             activeGridBlocks.Clear();
-            // IsCellsAlreadyUtilised = false;
-            return;
         }
         else
         {
             Debug.Log("BLocks not utilised");
+            
+            // Prevent playing sound when user has not placed any single cell.
+            if (activeGridBlocks.Count > 0)
+            {
+                SoundManager.Instance.Play(SoundTypes.CellRestore);
+            }
+
             GameManager.Instance.RestoreActiveCells();
             ResetActiveBlocks();
         }
+
+        CanPlaceCells();
     }
-    
+
+    private void CanPlaceCells()
+    {
+        bool canPlace = gridManager.CheckAdjacentSpaces(GameManager.Instance.GetCurrentCellsCount());
+        if (!canPlace)
+        {
+            UiManager.Instance.Gameover();
+        }
+    }
+
     private void CheckBlock( bool initialize = false)
     {
         if (GameManager.Instance.IsAllTheCellsUtilised())
@@ -110,7 +122,8 @@ public class PlacementController : MonoBehaviour
                     Color color = colorAndTag.color;
                     color.a = 1f;
                     block.blockImage.color = color; // Change color to green if it's the current or an adjacent block.
-                  
+                    SoundManager.Instance.Play(SoundTypes.CellPlace);
+
                     block.blockImage.rectTransform.DOScale(Vector3.one, 0.5f);
                     currentBlock = block; // Update the current block to the new one.
                     activeGridBlocks.Add(block);
@@ -157,10 +170,27 @@ public class PlacementController : MonoBehaviour
         // Check for diagonal adjacency where dx == 1 and dy == 1.
         return dx == 1 && dy == 1;
     }
+    
+    public void CheckForTheMatch(List<Block> activeBlocks)
+    {
+        List<Block> matchedBlocks =  matchFinder.FindMatchingBlocks(activeBlocks);
+        if (matchedBlocks != null && matchedBlocks.Count >= 4)
+        {
+            Debug.Log($"Matches found: {matchedBlocks.Count}");
 
+            SoundManager.Instance.Play(SoundTypes.CellClear);
+            foreach (Block block in matchedBlocks)
+            {
+                block.ResetBlock(0.5f);
+                ScoreManager.Instance.UpdateScore(10);
+            }
+        }
+    }
     private void OnDisable()
     {
+        Debug.Log("On Disable");
         currentBlock = null;
         activeGridBlocks.Clear();
+        matchFinder = null;
     }
 }
