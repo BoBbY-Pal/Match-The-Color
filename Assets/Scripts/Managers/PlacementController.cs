@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using DG.Tweening;
@@ -18,6 +19,14 @@ public class PlacementController : MonoBehaviour
     public List<Block> activeGridBlocks = new List<Block>();
     
     public MatchFinder matchFinder;
+
+    private readonly float inBetweenDelay = 0.1f;
+    private WaitForSeconds clearBlockRoutine;
+
+    private void Awake()
+    {
+        clearBlockRoutine = new WaitForSeconds(inBetweenDelay);
+    }
 
     private void OnEnable()
     {
@@ -62,7 +71,7 @@ public class PlacementController : MonoBehaviour
         
         if (GameManager.Instance.IsAllTheCellsUtilised())
         {
-            CheckForTheMatch(activeGridBlocks);
+            StartCoroutine(CheckForTheMatch(activeGridBlocks));
             CellsController.Instance.RefillColorCells();
             activeGridBlocks.Clear();
         }
@@ -171,7 +180,7 @@ public class PlacementController : MonoBehaviour
         return dx == 1 && dy == 1;
     }
     
-    public void CheckForTheMatch(List<Block> activeBlocks)
+    public IEnumerator CheckForTheMatch(List<Block> activeBlocks)
     {
         List<Block> matchedBlocks =  matchFinder.FindMatchingBlocks(activeBlocks);
         if (matchedBlocks != null && matchedBlocks.Count >= 4)
@@ -181,8 +190,9 @@ public class PlacementController : MonoBehaviour
             SoundManager.Instance.Play(SoundTypes.CellClear);
             foreach (Block block in matchedBlocks)
             {
-                block.ResetBlock(0.5f);
+                block.ResetBlock(1f);
                 ScoreManager.Instance.UpdateScore(10);
+                yield return clearBlockRoutine;
             }
         }
     }
