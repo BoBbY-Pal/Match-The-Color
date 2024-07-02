@@ -14,14 +14,7 @@ public class CellsController : Singleton<CellsController>
 
     [SerializeField] private List<Image> cells = new List<Image>();
     public Queue<ColorAndTag> colorQueue = new Queue<ColorAndTag>();
-
-    private readonly float inBetweenDelay = 0.1f;
-    private WaitForSeconds inBetweenWait;
-
-    void Awake()
-    {
-        inBetweenWait = new WaitForSeconds(inBetweenDelay);
-    }
+    
     private void OnEnable()
     {
         _cellColorsData = (CellColorData) Resources.Load("CellColorsData");

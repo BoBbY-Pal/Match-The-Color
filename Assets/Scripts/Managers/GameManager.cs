@@ -24,7 +24,7 @@ namespace Managers
         public bool isGameOver = false;
         public void StartGame()
         {
-            gridManager.CreateGrid();
+            StartCoroutine(gridManager.CreateGrid());
             isGameOver = false;
             CellsController.Instance.PrepareCells();
             colorAndCellsToPlace = CellsController.Instance.GetNewColors();

@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,8 +12,15 @@ public class GridManager : MonoBehaviour
     public Transform gridParent;
 
     private Block[,] gridArray;
-
-    public void CreateGrid()
+    
+    private readonly float inBetweenDelay = 0.1f;
+    private WaitForSeconds inBetweenWait;
+    
+    void Awake()
+    {
+        inBetweenWait = new WaitForSeconds(inBetweenDelay);
+    }
+    public IEnumerator CreateGrid()
     {
             gridArray = new Block[rowSize, columnSize];
 
@@ -49,11 +56,11 @@ public class GridManager : MonoBehaviour
                     block.SetBlockLocation(row, column);
                     block.gameObject.SetActive(true);
                     gridArray[row, column] = block;
+                    
                 }
                 currentPositionX = startPointX;
                 currentPositionY -= (blockSize + blockSpace);
-
-      
+                yield return inBetweenWait;
             }
 
     }
