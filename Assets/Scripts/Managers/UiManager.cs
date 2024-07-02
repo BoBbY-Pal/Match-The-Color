@@ -12,10 +12,14 @@ public class UiManager : Singleton<UiManager>
 {
     [SerializeField] private GameObject gameplayPanel;
     [SerializeField] private GameObject mainmenuPanel;
-    [SerializeField] private GameObject gameInfoPanel;
     
+    [SerializeField] private RectTransform gameInfoPanel;
     [SerializeField] private GameoverScreen gameOverPanel;
     [SerializeField] private TextMeshProUGUI mainMenuBestScore;
+
+    public Image soundImage;
+    public Sprite muteSprite;
+    public Sprite unMuteSprite;
     private void Start()
     {
         gameplayPanel.SetActive(false);
@@ -51,16 +55,25 @@ public class UiManager : Singleton<UiManager>
         
         PlayBtnPressed();
     }
-    
-    public void InfoBtnPressed()
-    {
-        Debug.Log("Show Info");
 
+    public void ActivateInfoPanel()
+    {
+        gameInfoPanel.gameObject.SetActive(true);
+        SoundManager.Instance.Play(SoundTypes.ButtonClick);
+        gameInfoPanel.DOLocalMoveY(0, 0.6f).SetEase(Ease.InFlash);
+    }
+    public void DeActivateInfoPanel()
+    {
+        SoundManager.Instance.Play(SoundTypes.ButtonClick);
+
+        gameInfoPanel.DOLocalMoveY(800, 0.6f).SetEase(Ease.OutBounce).OnComplete(() => gameInfoPanel.gameObject.SetActive(false));
     }
     
     public void OpenProfile()
     {
         Debug.Log("Open profile");
+        SoundManager.Instance.Play(SoundTypes.ButtonClick);
+
         // Replace the URL with the LinkedIn profile URL you want to open
         string url = "https://www.linkedin.com/in/bobby-pal/";
         Application.OpenURL(url);
@@ -69,8 +82,10 @@ public class UiManager : Singleton<UiManager>
     public void MuteBtnPressed()
     {
         Debug.Log("MUTE");
-
-        SoundManager.Instance.Mute(!SoundManager.Instance.isMute);
+        bool muteStatus = SoundManager.Instance.isMute;
+        soundImage.sprite = muteStatus ? unMuteSprite : muteSprite;
+        SoundManager.Instance.Mute(!muteStatus);
+        SoundManager.Instance.Play(SoundTypes.ButtonClick);
     }
     
     public void Gameover()
