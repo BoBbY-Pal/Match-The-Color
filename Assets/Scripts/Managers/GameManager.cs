@@ -33,12 +33,12 @@ namespace Managers
         public ColorAndTag GetCellColorAndTag()
         {
             ColorAndTag colorAndTag = colorAndCellsToPlace.Dequeue();
-            colorAndTag.img.rectTransform.DOScale(new Vector3(0.55f,0.55f, 0.55f), 0.5f) ;
-            // Color color = colorAndTag.img.color;
-            colorAndTag.img.DOFade(0.5f, 0.5f);
-            // color.a = 0.5f;
-            // colorAndTag.img.color = color;
             activeColorsAndCell.Enqueue(colorAndTag);
+            colorAndTag.img.rectTransform.DOScale(new Vector3(0.55f,0.55f, 0.55f), 0.5f) ;
+            Color color = colorAndTag.img.color;
+           
+            color.a = 0.5f;
+            colorAndTag.img.color = color;
             return colorAndTag;
         }
 
