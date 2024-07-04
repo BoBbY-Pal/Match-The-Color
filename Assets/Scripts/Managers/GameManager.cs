@@ -1,73 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using Script.Utils;
 using ScriptableObjects;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace Managers
 {
     public class GameManager : Singleton<GameManager>
     {
-        public GridManager gridManager;
-        public CellColorManager cellColorManager;
-        public MatchFinder matchFinder;
+        [SerializeField] private GridManager gridManager;
         
+        /// <summary>
+        /// List of cells in container which are active, means they're not permanently placed yet and can be restored if player fails to place all the cells from the container.
+        /// </summary>
+        private Queue<ColorAndTag> activeColorsAndCell = new Queue<ColorAndTag>();
         
-        public Queue<ColorAndTag> activeColorsAndCell = new Queue<ColorAndTag>();
-        public Queue<ColorAndTag> colorAndCells = new Queue<ColorAndTag>();
+        /// <summary>
+        /// list of cells to place on grid, stored in custom type with color, tag and img ref. 
+        /// </summary>
+        private Queue<ColorAndTag> colorAndCellsToPlace = new Queue<ColorAndTag>();  
 
-        private void Start()
-        {
-            StartGame();
-        }
-
+        public bool isGameOver = false;
         public void StartGame()
         {
-            gridManager.CreateGrid();
-            cellColorManager.PrepareCells();
-            colorAndCells = new Queue<ColorAndTag>(cellColorManager.colorQueue);
-            matchFinder = new MatchFinder(gridManager);
+            StartCoroutine(gridManager.CreateGrid());
+            isGameOver = false;
+            CellsController.Instance.PrepareCells();
+            colorAndCellsToPlace = CellsController.Instance.GetNewColors();
         }
         
         public ColorAndTag GetCellColorAndTag()
         {
-            ColorAndTag colorAndTag = colorAndCells.Dequeue();
-            colorAndTag.img.rectTransform.localScale = Vector3.one * 0.6f;
+            ColorAndTag colorAndTag = colorAndCellsToPlace.Dequeue();
+            activeColorsAndCell.Enqueue(colorAndTag);
+            colorAndTag.img.rectTransform.DOScale(new Vector3(0.55f,0.55f, 0.55f), 0.5f) ;
             Color color = colorAndTag.img.color;
+           
             color.a = 0.5f;
             colorAndTag.img.color = color;
-            activeColorsAndCell.Enqueue(colorAndTag);
             return colorAndTag;
         }
 
-        public void RestoreActiveColorCells()
+        public void RestoreActiveCells()
         {
-            foreach (ColorAndTag activeColorCell in activeColorsAndCell)
+            foreach (ColorAndTag activeCell in activeColorsAndCell)
             {
-                activeColorCell.img.rectTransform.localScale = Vector3.one;
-                Color color = activeColorCell.img.color;
+                activeCell.img.rectTransform.DOScale(Vector3.one, 0.3f);
+                Color color = activeCell.img.color;
                 color.a = 1f;
-                activeColorCell.img.color = color;
+                activeCell.img.color = color;
                 Debug.Log("resetActiveCOlorCell");
             }
             activeColorsAndCell.Clear();
-            colorAndCells.Clear();
+            colorAndCellsToPlace.Clear();
 
-            colorAndCells = new Queue<ColorAndTag>(cellColorManager.colorQueue);
-            Debug.Log($"Color Cells refilled: {colorAndCells.Count}");
+            colorAndCellsToPlace = CellsController.Instance.GetNewColors();
+            Debug.Log($"Color Cells refilled: {colorAndCellsToPlace.Count}");
         }
 
-        public void RefillColorCells()
-        {
-            ResetActiveCells();
-            colorAndCells.Clear();
-            activeColorsAndCell.Clear();
-            cellColorManager.PrepareCells();
-            colorAndCells = new Queue<ColorAndTag>(cellColorManager.colorQueue);
-            Debug.Log($"Color Cells refilled: {colorAndCells.Count}");
-        }
-
-        private void ResetActiveCells()
+        public void ResetActiveCells()
         {
             foreach (ColorAndTag activeCell in activeColorsAndCell)
             {
@@ -75,28 +67,35 @@ namespace DefaultNamespace
                 Color color = activeCell.img.color;
                 color.a = 0f;
                 activeCell.img.color = color;
+                Debug.Log("Cell reset success", activeCell.img.gameObject);
             }
+            
+            colorAndCellsToPlace.Clear();
+            activeColorsAndCell.Clear();
         }
 
-      
+      public void AssignNewColors(Queue<ColorAndTag> queue)
+      {
+          colorAndCellsToPlace = new Queue<ColorAndTag>(queue);
+          Debug.Log($"Color Cells refilled: {colorAndCellsToPlace.Count}");
+      }
         public bool IsAllTheCellsUtilised()
         {
-            return colorAndCells.Count == 0;
+            return colorAndCellsToPlace.Count == 0;
         }
 
-        public void CheckForTheMatch(List<Block> activeBlocks)
-        {
-            List<Block> matchedBlocks =  matchFinder.FindMatchingBlocks(activeBlocks);
-            if (matchedBlocks != null && matchedBlocks.Count >= 4)
-            {
-                Debug.Log($"Matches found: {matchedBlocks.Count}");
+     
 
-                foreach (var block in matchedBlocks)
-                {
-                    block.ResetBlock();
-                    ScoreManager.Instance.UpdateScore(10);
-                }
-            }
+        public void ExitGame()
+        {
+            gridManager.ClearGrid();
+            colorAndCellsToPlace.Clear();
+            activeColorsAndCell.Clear();
+        }
+
+        public int GetCurrentCellsCount()
+        {
+            return colorAndCellsToPlace.Count;
         }
     }
 }

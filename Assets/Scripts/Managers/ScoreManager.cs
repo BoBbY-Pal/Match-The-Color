@@ -1,19 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Script.Utils;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ScoreManager : Singleton<ScoreManager>
 {
-    [SerializeField] private TextMeshProUGUI scoreText;
+    [FormerlySerializedAs("scoreText")] [SerializeField] private TextMeshProUGUI currentScoreText;
     [SerializeField] private TextMeshProUGUI bestScoreText;
 
-    private const string BestScoreKey = "BESTSCORE";
+    public const string BestScoreKey = "BESTSCORE";
 
     private int currentScore = 0;
     private int bestScore = 0;
-    void Start()
+
+    public void UpdateScoreText()
     {
         if (PlayerPrefs.HasKey(BestScoreKey))
         {
@@ -31,6 +34,22 @@ public class ScoreManager : Singleton<ScoreManager>
             bestScoreText.SetText(bestScore.ToString());
             PlayerPrefs.SetInt(BestScoreKey, bestScore);
         }
-        scoreText.SetText(currentScore.ToString());
+        currentScoreText.SetText(currentScore.ToString());
+    }
+
+    public int GetCurrentScore()
+    {
+        return currentScore;
+    }
+    
+    public int GetBestScore()
+    {
+        return bestScore;
+    }
+    
+    public void ResetCurrentScore()
+    {
+        currentScore = 0;
+        currentScoreText.SetText("0");
     }
 }

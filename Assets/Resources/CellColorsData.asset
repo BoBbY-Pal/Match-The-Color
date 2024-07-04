@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df5db16e7fea491f85b3e03f3b2bd689, type: 3}
+  m_Name: CellColorsData
+  m_EditorClassIdentifier: 
+  cellColors:
+  - color: {r: 1, g: 0, b: 0, a: 1}
+    colorTag: C1
+  - color: {r: 0.42830187, g: 1, b: 0.45293927, a: 1}
+    colorTag: C2
+  - color: {r: 0.90993786, g: 0, b: 1, a: 1}
+    colorTag: C3
+  - color: {r: 0, g: 1, b: 0.7947893, a: 1}
+    colorTag: C4
+  - color: {r: 0.05904436, g: 0, b: 1, a: 1}
+    colorTag: C5
+  - color: {r: 0.90699434, g: 1, b: 0, a: 1}
+    colorTag: C6
+  - color: {r: 0, g: 0, b: 0, a: 1}
+    colorTag: C7
